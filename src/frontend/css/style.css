@@ -36,7 +36,6 @@ body::before {
     75% { transform: translate(30px, 10px) rotate(4deg) scale(1.02); }
 }
 
-/* Bolhas flutuantes adicionais com JavaScript opcional */
 .container {
     max-width: 1200px;
     margin: 0 auto;
@@ -277,7 +276,7 @@ main {
 }
 
 .btn-secondary:hover {
-    transform: translateY(-2px) rotate(90deg);
+    transform: translateY(-2px);
     box-shadow: 0 6px 25px rgba(91, 33, 182, 0.3);
     background: linear-gradient(135deg, #7c3aed, #6b3a8a);
 }
@@ -516,7 +515,7 @@ main {
     letter-spacing: 0.5px;
 }
 
-.status-aberto {
+.status-pendente {
     background: rgba(147, 51, 234, 0.2);
     color: #a78bfa;
     border: 1px solid rgba(147, 51, 234, 0.25);
@@ -530,52 +529,8 @@ main {
 
 .status-resolvido {
     background: rgba(76, 29, 149, 0.2);
-    color: #7c3aed;
+    color: #c4b5fd;
     border: 1px solid rgba(76, 29, 149, 0.25);
-}
-
-.status-fechado {
-    background: rgba(30, 17, 40, 0.3);
-    color: #6b3a8a;
-    border: 1px solid rgba(30, 17, 40, 0.3);
-}
-
-/* Priority Badges */
-.priority-badge {
-    padding: 4px 14px;
-    border-radius: 20px;
-    font-size: 0.75rem;
-    font-weight: 700;
-}
-
-.priority-baixa {
-    background: rgba(30, 17, 40, 0.3);
-    color: #8b5cf6;
-    border: 1px solid rgba(139, 92, 246, 0.15);
-}
-
-.priority-média {
-    background: rgba(147, 51, 234, 0.15);
-    color: #a78bfa;
-    border: 1px solid rgba(147, 51, 234, 0.15);
-}
-
-.priority-alta {
-    background: rgba(153, 27, 27, 0.15);
-    color: #fca5a5;
-    border: 1px solid rgba(153, 27, 27, 0.2);
-}
-
-.priority-urgente {
-    background: rgba(153, 27, 27, 0.25);
-    color: #fecaca;
-    border: 1px solid rgba(153, 27, 27, 0.3);
-    animation: pulseUrgent 2s ease-in-out infinite;
-}
-
-@keyframes pulseUrgent {
-    0%, 100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.7; transform: scale(0.95); }
 }
 
 .empty-state {
