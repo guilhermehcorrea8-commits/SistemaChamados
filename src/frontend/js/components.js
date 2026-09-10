@@ -1,23 +1,16 @@
 // Função para criar os elementos do DOM
 const Components = {
-    // Criar o HTML de um ticket individual
+    // Criar o HTML de um chamado individual
     renderTicket: (ticket) => {
         const statusMap = {
-            'Aberto': 'status-aberto',
+            'Pendente': 'status-pendente',
             'Em Andamento': 'status-em-andamento',
-            'Resolvido': 'status-resolvido',
-            'Fechado': 'status-fechado'
+            'Resolvido': 'status-resolvido'
         };
 
-        const priorityMap = {
-            'Baixa': 'priority-baixa',
-            'Média': 'priority-média',
-            'Alta': 'priority-alta',
-            'Urgente': 'priority-urgente'
-        };
-
-        // Formatar data
-        const createdDate = new Date(ticket.createdAt);
+        // Formatar data (aceita tanto createdAt quanto dataAbertura)
+        const rawDate = ticket.createdAt || ticket.dataAbertura || new Date().toISOString();
+        const createdDate = new Date(rawDate);
         const formattedDate = createdDate.toLocaleDateString('pt-BR', {
             day: '2-digit',
             month: '2-digit',
@@ -26,35 +19,25 @@ const Components = {
             minute: '2-digit'
         });
 
-        // Adicionar emoji baseado na prioridade
-        const priorityEmojis = {
-            'Baixa': '🟢',
-            'Média': '🟡',
-            'Alta': '🟠',
-            'Urgente': '🔴'
-        };
-
         return `
             <div class="ticket-item" data-id="${ticket.id}">
                 <div class="ticket-header">
-                    <h3 class="ticket-title">${Components.escapeHtml(ticket.title)}</h3>
+                    <h3 class="ticket-title">${Components.escapeHtml(ticket.titulo)}</h3>
                     <div class="ticket-meta">
-                        <span class="status-badge ${statusMap[ticket.status] || 'status-aberto'}">
-                            ${ticket.status || 'Aberto'}
-                        </span>
-                        <span class="priority-badge ${priorityMap[ticket.priority] || 'priority-média'}">
-                            ${priorityEmojis[ticket.priority] || '🟡'} ${ticket.priority || 'Média'}
+                        <span class="status-badge ${statusMap[ticket.status] || 'status-pendente'}">
+                            ${ticket.status || 'Pendente'}
                         </span>
                     </div>
                 </div>
                 
-                <p class="ticket-description">${Components.escapeHtml(ticket.description)}</p>
+                <p class="ticket-description">${Components.escapeHtml(ticket.descricao)}</p>
                 
                 <div class="ticket-footer">
                     <div class="ticket-info">
-                        <span><i class="fas fa-tag"></i> ${ticket.category || 'Sem categoria'}</span>
+                        <span><i class="fas fa-tag"></i> ${ticket.categoria || 'Outro'}</span>
+                        <span><i class="fas fa-user"></i> ${Components.escapeHtml(ticket.solicitante || 'Não informado')}</span>
                         <span><i class="far fa-calendar-alt"></i> ${formattedDate}</span>
-                        <span><i class="fas fa-ghost"></i> ID: #${ticket.id}</span>
+                        <span><i class="fas fa-ghost"></i> #${ticket.id}</span>
                     </div>
                     <div class="ticket-actions">
                         ${Components.getStatusActions(ticket.id, ticket.status)}
@@ -70,19 +53,15 @@ const Components = {
     // Gerar botões de ação baseados no status atual
     getStatusActions: (id, currentStatus) => {
         const statusTransitions = {
-            'Aberto': [
+            'Pendente': [
                 { status: 'Em Andamento', label: 'Iniciar', icon: 'fa-play', class: 'btn-success' }
             ],
             'Em Andamento': [
                 { status: 'Resolvido', label: 'Resolver', icon: 'fa-check', class: 'btn-success' },
-                { status: 'Aberto', label: 'Reabrir', icon: 'fa-undo', class: 'btn-warning' }
+                { status: 'Pendente', label: 'Reabrir', icon: 'fa-undo', class: 'btn-warning' }
             ],
             'Resolvido': [
-                { status: 'Fechado', label: 'Fechar', icon: 'fa-times', class: 'btn-danger' },
                 { status: 'Em Andamento', label: 'Reabrir', icon: 'fa-undo', class: 'btn-warning' }
-            ],
-            'Fechado': [
-                { status: 'Aberto', label: 'Reabrir', icon: 'fa-undo', class: 'btn-warning' }
             ]
         };
 
@@ -95,7 +74,7 @@ const Components = {
         `).join('');
     },
 
-    // Renderizar lista completa de tickets
+    // Renderizar lista completa de chamados
     renderTicketList: (tickets) => {
         if (!tickets || tickets.length === 0) {
             return `
@@ -116,7 +95,7 @@ const Components = {
     // Escapar HTML para prevenir XSS
     escapeHtml: (unsafe) => {
         if (!unsafe) return '';
-        return unsafe
+        return String(unsafe)
             .replace(/&/g, "&amp;")
             .replace(/</g, "&lt;")
             .replace(/>/g, "&gt;")
@@ -124,14 +103,9 @@ const Components = {
             .replace(/'/g, "&#039;");
     },
 
-    // Atualizar contador de tickets
+    // Atualizar contador de chamados
     updateTicketCounter: (tickets) => {
-        const counter = document.getElementById('ticketCount');
         const total = document.getElementById('totalTickets');
-        if (counter) {
-            const count = tickets ? tickets.length : 0;
-            counter.textContent = `${count} chamado${count !== 1 ? 's' : ''}`;
-        }
         if (total) {
             total.textContent = tickets ? tickets.length : 0;
         }
